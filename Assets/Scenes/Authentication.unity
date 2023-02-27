@@ -1128,8 +1128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61295e98f185c544a9c9ea918c08a4f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loginPanel: {fileID: 0}
-  registrationPanel: {fileID: 0}
+  loginPanel: {fileID: 774950061}
+  registrationPanel: {fileID: 851635579}
 --- !u!4 &583195234
 Transform:
   m_ObjectHideFlags: 0

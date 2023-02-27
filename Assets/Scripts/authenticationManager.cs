@@ -19,7 +19,7 @@ public class authenticationManager : MonoBehaviour
     [Header("Login")]
     public TMP_InputField emailLoginField;
     public TMP_InputField passwordLoginField;
-    
+
 
     [Space]
     [Header("Registration")]
@@ -28,23 +28,28 @@ public class authenticationManager : MonoBehaviour
     public TMP_InputField passwordRegistrationField;
     public TMP_InputField confirmPasswordRegistrationField;
 
-    private void Awake()
+    private void Start()
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
-        {
-            dependencyStatus = task.Result;
-            if (dependencyStatus == DependencyStatus.Available)
-            {
-                InitializeFirebase();
-
-            }
-            else
-            {
-                Debug.LogError("Could not resolve all firebase dependencies: " + dependencyStatus); 
-            }
-        });
+        StartCoroutine(CheckAndFixDependenciesAsync());
     }
+    private IEnumerator CheckAndFixDependenciesAsync()
+    {
+        var dependencyTask = FirebaseApp.CheckAndFixDependenciesAsync();
+        yield return new WaitUntil(() => dependencyTask.IsCompleted);
+        dependencyStatus = dependencyTask.Result;
+        if (dependencyStatus == DependencyStatus.Available)
+        {
+            InitializeFirebase();
+            yield return new WaitForEndOfFrame();
+            StartCoroutine(CheckForAutoLogin());
 
+        }
+        else
+        {
+            Debug.LogError("Could not resolve all firebase dependencies: " + dependencyStatus);
+        }
+
+    }
     private void InitializeFirebase()
     {
         auth = FirebaseAuth.DefaultInstance;
@@ -52,9 +57,36 @@ public class authenticationManager : MonoBehaviour
         AuthStateChanged(this, null);
     }
 
+    private IEnumerator CheckForAutoLogin()
+    {
+        if (user != null)
+        {
+            var reloadUserTask = user.ReloadAsync();
+            yield return new WaitUntil(() => reloadUserTask.IsCompleted);
+            AutoLogin();
+        }
+        else
+        {
+            UIManager.Instance.OpenLoginPanel();
+        }
+    }
+
+    private void AutoLogin()
+    {
+        if (user != null)
+        {
+            References.userName = user.DisplayName;
+            SceneManager.LoadScene("GameScene");
+        }
+        else
+        {
+            UIManager.Instance.OpenLoginPanel();
+        }
+    }
+
     private void AuthStateChanged(object sender, EventArgs eventArgs)
     {
-        if(auth.CurrentUser != user)
+        if (auth.CurrentUser != user)
         {
             bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
             if (!signedIn && user != null)
@@ -120,15 +152,15 @@ public class authenticationManager : MonoBehaviour
 
     private IEnumerator RegisterAsync(string name, string email, string password, string confirmPassword)
     {
-        if(name == "")
+        if (name == "")
         {
             Debug.LogError("User Name is Empty");
         }
-        else if(email == "")
+        else if (email == "")
         {
             Debug.LogError("Email Field is Empty");
         }
-        else if(passwordRegistrationField.text != confirmPasswordRegistrationField.text)
+        else if (passwordRegistrationField.text != confirmPasswordRegistrationField.text)
         {
             Debug.LogError("Password does not match");
         }
@@ -169,7 +201,7 @@ public class authenticationManager : MonoBehaviour
                 UserProfile userProfile = new UserProfile { DisplayName = name };
                 var updateProfileTask = user.UpdateUserProfileAsync(userProfile);
                 yield return new WaitUntil(() => updateProfileTask.IsCompleted);
-                if(updateProfileTask.Exception != null)
+                if (updateProfileTask.Exception != null)
                 {
                     user.DeleteAsync();
                     Debug.LogError(updateProfileTask.Exception);
