@@ -5,6 +5,7 @@ using TMPro;
 using Firebase;
 using Firebase.Auth;
 using System;
+using UnityEngine.SceneManagement;
 
 public class authenticationManager : MonoBehaviour
 {
@@ -107,6 +108,8 @@ public class authenticationManager : MonoBehaviour
         {
             user = loginTask.Result;
             Debug.LogFormat("{0} You are successfully logged in.", user.DisplayName);
+            References.userName = user.DisplayName;
+            SceneManager.LoadScene("GameScene");
         }
     }
 
@@ -198,6 +201,7 @@ public class authenticationManager : MonoBehaviour
                 else
                 {
                     Debug.Log("Registration Successful Welcome " + user.DisplayName);
+                    UIManager.Instance.OpenLoginPanel();
                 }
 
             }
