@@ -3609,13 +3609,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dependencyStatus: 0
-  emailLoginField: {fileID: 0}
-  passwordLoginField: {fileID: 0}
+  emailLoginField: {fileID: 1481060837}
+  passwordLoginField: {fileID: 1174794269}
   signup: {fileID: 709873613}
-  nameRegistrationField: {fileID: 0}
-  emailRegistrationField: {fileID: 0}
-  passwordRegistrationField: {fileID: 0}
-  confirmPasswordRegistrationField: {fileID: 0}
+  nameRegistrationField: {fileID: 1347713327}
+  emailRegistrationField: {fileID: 1840777070}
+  passwordRegistrationField: {fileID: 1902990407}
+  confirmPasswordRegistrationField: {fileID: 259294127}
 --- !u!4 &1817124153
 Transform:
   m_ObjectHideFlags: 0
