@@ -75,8 +75,16 @@ public class authenticationManager : MonoBehaviour
     {
         if (user != null)
         {
-            References.userName = user.DisplayName;
-            SceneManager.LoadScene("GameScene");
+            if (user.IsEmailVerified)
+            {
+                References.userName = user.DisplayName;
+                SceneManager.LoadScene("GameScene");
+            }
+            else
+            {
+                SendEmailForVerification();
+            }
+            
         }
         else
         {
@@ -140,8 +148,17 @@ public class authenticationManager : MonoBehaviour
         {
             user = loginTask.Result;
             Debug.LogFormat("{0} You are successfully logged in.", user.DisplayName);
-            References.userName = user.DisplayName;
-            SceneManager.LoadScene("GameScene");
+            
+
+            if (user.IsEmailVerified)
+            {
+                References.userName = user.DisplayName;
+                SceneManager.LoadScene("GameScene");
+            }
+            else
+            {
+                SendEmailForVerification();
+            }
         }
     }
 
@@ -233,8 +250,54 @@ public class authenticationManager : MonoBehaviour
                 else
                 {
                     Debug.Log("Registration Successful Welcome " + user.DisplayName);
-                    UIManager.Instance.OpenLoginPanel();
+                    if (user.IsEmailVerified)
+                    {
+                        UIManager.Instance.OpenLoginPanel();
+                    }
+                    else
+                    {
+                        SendEmailForVerification();
+                    }
                 }
+
+            }
+        }
+    }
+
+    public void SendEmailForVerification()
+    {
+        StartCoroutine(SendEmailForVerificationAsync());
+    }
+
+    private IEnumerator SendEmailForVerificationAsync()
+    {
+        if (user != null)
+        {
+            var sendEmailTask = user.SendEmailVerificationAsync();
+            yield return new WaitUntil(() => sendEmailTask.IsCompleted);
+            if(sendEmailTask.Exception != null)
+            {
+                FirebaseException firebaseException = sendEmailTask.Exception.GetBaseException() as FirebaseException;
+                AuthError error = (AuthError)firebaseException.ErrorCode;
+                string errorMessage = "Unknown Error: Please Try again later.";
+                switch (error) 
+                {
+                    case AuthError.Cancelled:
+                        errorMessage = "Email Verification Was Cancelled";
+                        break;
+                    case AuthError.TooManyRequests:
+                        errorMessage = "Too Many Request";
+                        break;
+                    case AuthError.InvalidRecipientEmail:
+                        errorMessage = "The Email you entered is Invalid.";
+                        break;
+                }
+                UIManager.Instance.ShowVerificationResponse(false, user.Email, errorMessage);
+            }
+            else
+            {
+                Debug.Log("Email Successfully sent.");
+                UIManager.Instance.ShowVerificationResponse(true, user.Email, null);
 
             }
         }
