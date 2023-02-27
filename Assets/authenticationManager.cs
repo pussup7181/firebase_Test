@@ -18,7 +18,7 @@ public class authenticationManager : MonoBehaviour
     [Header("Login")]
     public TMP_InputField emailLoginField;
     public TMP_InputField passwordLoginField;
-    public Button signup;
+    
 
     [Space]
     [Header("Registration")]
@@ -164,7 +164,41 @@ public class authenticationManager : MonoBehaviour
             {
                 user = registerTask.Result;
                 UserProfile userProfile = new UserProfile { DisplayName = name };
-                //var updateProfileTask
+                var updateProfileTask = user.UpdateUserProfileAsync(userProfile);
+                yield return new WaitUntil(() => updateProfileTask.IsCompleted);
+                if(updateProfileTask.Exception != null)
+                {
+                    user.DeleteAsync();
+                    Debug.LogError(updateProfileTask.Exception);
+
+                    FirebaseException firebaseException = registerTask.Exception.GetBaseException() as FirebaseException;
+                    AuthError authError = (AuthError)firebaseException.ErrorCode;
+
+                    string failedMessage = "Registration Failed! Because: ";
+                    switch (authError)
+                    {
+                        case AuthError.InvalidEmail:
+                            failedMessage += "Email is invalid";
+                            break;
+                        case AuthError.WrongPassword:
+                            failedMessage += "Wrong Password";
+                            break;
+                        case AuthError.MissingEmail:
+                            failedMessage += "Email is Missing";
+                            break;
+                        case AuthError.MissingPassword:
+                            failedMessage += "password is Missing";
+                            break;
+                        default:
+                            failedMessage = "Login Failed";
+                            break;
+                    }
+                    Debug.Log(failedMessage);
+                }
+                else
+                {
+                    Debug.Log("Registration Successful Welcome " + user.DisplayName);
+                }
 
             }
         }
