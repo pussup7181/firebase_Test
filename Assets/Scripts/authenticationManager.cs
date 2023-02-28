@@ -109,6 +109,13 @@ public class authenticationManager : MonoBehaviour
         }
     }
 
+    public void logout()
+    {
+        if(auth!=null && user != null)
+        {
+            auth.SignOut();
+        }
+    }
     public void Login()
     {
         StartCoroutine(LoginAsync(emailLoginField.text, passwordLoginField.text));

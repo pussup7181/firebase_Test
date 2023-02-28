@@ -1,41 +1,49 @@
 {
   "project_info": {
-    "project_number": "544614022628",
-    "firebase_url": "https://fir-test-7e6d6-default-rtdb.firebaseio.com",
-    "project_id": "fir-test-7e6d6",
-    "storage_bucket": "fir-test-7e6d6.appspot.com"
+    "project_number": "921602919971",
+    "firebase_url": "https://folklogapp-default-rtdb.firebaseio.com",
+    "project_id": "folklogapp",
+    "storage_bucket": "folklogapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:544614022628:android:4776276798708c94625bf1",
+        "mobilesdk_app_id": "1:921602919971:android:225b78411829a7b16f2b96",
         "android_client_info": {
-          "package_name": "com.pushp.firebaseTest"
+          "package_name": "com.folklogapp.folklog"
         }
       },
       "oauth_client": [
         {
-          "client_id": "544614022628-pe5i9d64r78ads63l4mf6an4o7rvto74.apps.googleusercontent.com",
+          "client_id": "921602919971-c2vaelb0jgg8549mhpv3v34gjhrur6j7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.folklogapp.folklog",
+            "certificate_hash": "6174c0506373388734724f73c3e37149321d5c2c"
+          }
+        },
+        {
+          "client_id": "921602919971-0u7peehm6br0i0i4einhoknmaqd6hspm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCJs09uOMdwyaHCWOW6zIjU5RdzmTUH9RA"
+          "current_key": "AIzaSyAvtH8cX8BSgu9DEvEBiOYtgU6nhevRRw4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "544614022628-pe5i9d64r78ads63l4mf6an4o7rvto74.apps.googleusercontent.com",
+              "client_id": "921602919971-0u7peehm6br0i0i4einhoknmaqd6hspm.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "544614022628-rbaneoktq9uuts6csditq4ajvlq6lm6n.apps.googleusercontent.com",
+              "client_id": "921602919971-7kq4135682oko79pm7meq4ketsb09g2m.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.pushp.firebaseTest"
+                "bundle_id": "com.folklogapp.folklog"
               }
             }
           ]
