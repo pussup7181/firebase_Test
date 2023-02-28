@@ -19,6 +19,8 @@ public class authenticationManager : MonoBehaviour
     [Header("Login")]
     public TMP_InputField emailLoginField;
     public TMP_InputField passwordLoginField;
+    public TMP_InputField phoneNumber;
+    public TMP_InputField OTP;
 
 
     [Space]
@@ -27,6 +29,11 @@ public class authenticationManager : MonoBehaviour
     public TMP_InputField emailRegistrationField;
     public TMP_InputField passwordRegistrationField;
     public TMP_InputField confirmPasswordRegistrationField;
+
+
+    private uint phoneAuthTimeoutMs = 60 * 1000;
+    PhoneAuthProvider provider;
+    string VerificationId;
 
     private void Start()
     {
@@ -308,6 +315,58 @@ public class authenticationManager : MonoBehaviour
 
             }
         }
+    }
+
+    public void phoneLogin()
+    {
+        provider = PhoneAuthProvider.GetInstance(auth);
+        provider.VerifyPhoneNumber("+91"+phoneNumber.text, phoneAuthTimeoutMs, null,
+          verificationCompleted: (credential) => {
+      // Auto-sms-retrieval or instant validation has succeeded (Android only).
+      // There is no need to input the verification code.
+      // `credential` can be used instead of calling GetCredential().
+  },
+          verificationFailed: (error) => {
+      // The verification code was not sent.
+      // `error` contains a human readable explanation of the problem.
+  },
+          codeSent: (id, token) => {
+              VerificationId = id;
+      // Verification code was successfully sent via SMS.
+      // `id` contains the verification id that will need to passed in with
+      // the code from the user when calling GetCredential().
+      // `token` can be used if the user requests the code be sent again, to
+      // tie the two requests together.
+  },
+          codeAutoRetrievalTimeOut: (id) => {
+      // Called when the auto-sms-retrieval has timed out, based on the given
+      // timeout parameter.
+      // `id` contains the verification id of the request that timed out.
+  });
+    }
+
+    public void verifyOTP()
+    {
+        Credential credential = provider.GetCredential(VerificationId, OTP.text);
+
+        auth.SignInWithCredentialAsync(credential).ContinueWith(task => {
+            if (task.IsFaulted)
+            {
+                Debug.LogError("SignInWithCredentialAsync encountered an error: " +
+                               task.Exception);
+                return;
+            }
+
+            user = task.Result;
+            Debug.Log("User signed in successfully");
+            // This should display the phone number.
+            Debug.Log("Phone number: " + user.PhoneNumber);
+            // The phone number providerID is 'phone'.
+            Debug.Log("Phone provider ID: " + user.ProviderId);
+
+            References.userName = user.DisplayName;
+            SceneManager.LoadScene("GameScene");
+        });
     }
 }
 
