@@ -25,7 +25,7 @@ public class CountryCodeAndFlag : MonoBehaviour
 
     public TextAsset jsonFile;
     public Image countryFlag;
-    public TextMeshProUGUI countryCode;
+    
     public GameObject countryCodePrefab;
     public GameObject Content;
     public Toggle defaultValue;
@@ -35,6 +35,11 @@ public class CountryCodeAndFlag : MonoBehaviour
     Transform[] countryListToggles;
     public TMP_InputField searchText;
     public GameObject countryCodeMenu;
+
+    [Header("Phone Input")]
+    public Image countryFlagLabel;
+    public TextMeshProUGUI countryCode;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -59,8 +64,7 @@ public class CountryCodeAndFlag : MonoBehaviour
 
         }
         countryListToggles = Content.GetComponentsInChildren<Transform>() ;
-        gameObject.GetComponentInChildren<Button>().GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("in");
-        gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "(+91)";
+        
 
     }
 
@@ -72,10 +76,11 @@ public class CountryCodeAndFlag : MonoBehaviour
             defaultValue.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>(country.flag.Trim());
             defaultValue.GetComponentInChildren<TextMeshProUGUI>().text = country.name + " (+" + country.Code + ")";
             defaultValue.GetComponentInChildren<Toggle>().group = Content.GetComponent<ToggleGroup>();
+            defaultValue.isOn = true;
             countryCodeMenu.GetComponent<Animator>().ResetTrigger("In");
             countryCodeMenu.GetComponent<Animator>().SetTrigger("Out");
-            gameObject.GetComponentInChildren<Button>().GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>(country.flag.Trim());
-            gameObject.GetComponentInChildren<TextMeshProUGUI>().text = " (+" + country.Code + ")";
+            countryFlagLabel.sprite = Resources.Load<Sprite>(country.flag.Trim());
+            countryCode.text = " (+" + country.Code + ")";
         }
         
     }
